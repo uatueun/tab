@@ -1,7 +1,5 @@
 var that;
-
 class Tab {
-
     constructor(id) {
 
         //獲取元素
@@ -23,6 +21,7 @@ class Tab {
             this.lis[i].onclick = this.toggleTab;
             this.remove[i].onclick = this.removeTab;
             this.spans[i].ondblclick = this.editTab;
+            this.sections[i].ondblclick = this.editTab;
         }
     }
 
@@ -74,7 +73,7 @@ class Tab {
         console.log(index);
         // 根據索引號刪除對應的li和section remove()方法可以直接刪除指定的元素
         that.lis[index].remove();
-        that.section[index].remove();
+        that.sections[index].remove();
         that.init();
         // 當我們刪除的不是選狀態的li 的時候,原來的選中狀態li保持不變
         if (document.querySelector('.liactive')) return;
@@ -86,10 +85,25 @@ class Tab {
 
     //4.修改功能
     editTab() {
+        var str = this.innerHTML;
         // 雙擊禁止選定文字
         window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
         // alert(11)
         this.innerHTML = '<input type = "text" />';
+        var input = this.children[0];
+        input.value = str;
+        input.select();
+        //當我們離開文本框就把文本框內的值給span
+        input.onblur = function() {
+            this.parentNode.innerHTML = this.value;
+        };
+        // 按下enter也可以把文本寬框內的值給span
+        input.onkeyup = function(e) {
+            if (e.keyCode === 13) {
+                //手動調用表單失去焦點事件 不需要滑鼠離開操作
+                this.blur();
+            }
+        }
     }
 
 }
